@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation';
 import { unlockText } from '../../utils/api';
-import { decryptText } from '../../utils/crypto';
 import { MotiView, useAnimationState } from 'moti';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -34,16 +33,15 @@ export default function ViewScreen() {
     reset: { translateX: 0 },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async () => {
     setLoading(true);
     setError(null);
     setDecrypted(null);
     try {
       const { encrypted_text } = await unlockText(id);
-      const plain = await decryptText(encrypted_text, data.key);
-      setDecrypted(plain);
+      setDecrypted(encrypted_text);
     } catch (e: any) {
-      setError(e.message || 'Incorrect key or corrupted data');
+      setError(e.message || 'Failed to fetch text');
       errorAnim.transitionTo('shake');
       setTimeout(() => errorAnim.transitionTo('reset'), 300);
     } finally {

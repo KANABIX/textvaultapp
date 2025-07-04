@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { encryptText } from '../../utils/crypto';
 import { lockText } from '../../utils/api';
 import { MotiView } from 'moti';
 import Button from '../../components/Button';
@@ -35,8 +34,8 @@ export default function HomeScreen() {
     setError(null);
     setButtonPressed(true);
     try {
-      const encrypted = await encryptText(data.text, data.key);
-      const res = await lockText(encrypted);
+      // Send plain text to backend
+      const res = await lockText(data.text);
       navigation.navigate('View', { id: res.id });
     } catch (e: any) {
       setError(e.message || 'Something went wrong');
